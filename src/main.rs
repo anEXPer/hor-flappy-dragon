@@ -1,3 +1,4 @@
+#![warn(clippy::all, clippy::pedantic)]
 use bracket_lib::prelude::*;
 
 fn main() -> BError {
@@ -43,7 +44,7 @@ fn main() -> BError {
                 }
             }
         }
-        fn play (&mut self, ctx: &mut BTerm){
+        fn play (&mut self, _ctx: &mut BTerm){
             //TODO: fill in
             self.mode = GameMode::End;
         }
