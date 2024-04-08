@@ -5,7 +5,7 @@ enum GameMode {
     Playing,
     End,
 }
-const SCREEN_WIDTH : i32 = 80;
+const SCREEN_WIDTH: i32 = 80;
 const SCREEN_HEIGHT: i32 = 50;
 const FRAME_DURATION: f32 = 75.0;
 struct Player {
@@ -52,7 +52,7 @@ struct Obstacle {
     gap_size: i32,
 }
 impl Obstacle {
-    fn new (x: i32, score: i32) -> Self {
+    fn new(x: i32, score: i32) -> Self {
         let mut random = RandomNumberGenerator::new();
         Obstacle {
             x,
@@ -60,34 +60,24 @@ impl Obstacle {
             gap_size: i32::max(2, 20 - score),
         }
     }
-    fn render (&self, ctx: &mut BTerm, player_x: i32) {
+    fn render(&self, ctx: &mut BTerm, player_x: i32) {
         let screen_x = self.x - player_x;
-        let half_size = self.gap_size/2;
+        let half_size = self.gap_size / 2;
 
         // Draw top of obstacle
         for y in 0..self.gap_y - half_size {
-            ctx.set(
-                screen_x,
-                y,
-                RED,
-                BLACK,
-                to_cp437('|'),
-            );
+            ctx.set(screen_x, y, RED, BLACK, to_cp437('|'));
         }
         // Draw bottom of obstacle
         for y in self.gap_y + half_size..SCREEN_HEIGHT {
-            ctx.set(
-                screen_x,
-                y,
-                RED,
-                BLACK,
-                to_cp437('|'),
-            );
+            ctx.set(screen_x, y, RED, BLACK, to_cp437('|'));
         }
     }
-    fn lethal_interaction (&self, player: &Player) -> bool {
-        if player.x != self.x {return false};
-        let half_gap_size = self.gap_size/2;
+    fn lethal_interaction(&self, player: &Player) -> bool {
+        if player.x != self.x {
+            return false;
+        };
+        let half_gap_size = self.gap_size / 2;
         let player_above_gap = player.y < self.gap_y - half_gap_size;
         let player_below_gap = player.y > self.gap_y + half_gap_size;
         player_above_gap || player_below_gap
@@ -154,9 +144,7 @@ impl State {
         self.obstacle.render(ctx, self.player.x);
         if self.player.x > self.obstacle.x {
             self.score += 1;
-            self.obstacle = Obstacle::new(
-                self.player.x + SCREEN_WIDTH, self.score
-            );
+            self.obstacle = Obstacle::new(self.player.x + SCREEN_WIDTH, self.score);
         }
         ctx.print(1, 0, "Press SPACE to Flap");
 
