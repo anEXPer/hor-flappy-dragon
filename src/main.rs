@@ -118,6 +118,7 @@ impl State {
         ctx.cls();
         ctx.print(1, 1, "Flappy Dragon v0.0.1");
         ctx.print_centered(5, "You are DEAD!");
+        ctx.print_centered(6, format!("Your score was {}!", self.score));
         ctx.print_centered(8, "(P) Play Again");
         ctx.print_centered(9, "(Q) Quit Game");
         if let Some(key) = ctx.key {
