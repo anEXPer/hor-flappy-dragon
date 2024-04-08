@@ -5,7 +5,7 @@ enum GameMode {
     Playing,
     End,
 }
-//    const SCREEN_WIDTH : i32 = 80;
+const SCREEN_WIDTH : i32 = 80;
 const SCREEN_HEIGHT: i32 = 50;
 const FRAME_DURATION: f32 = 75.0;
 struct Player {
@@ -46,8 +46,50 @@ impl Player {
         self.y_velocity += -2.0;
     }
 }
+struct Obstacle {
+    x: i32,
+    gap_y: i32,
+    gap_size: i32,
+}
+impl Obstacle {
+    fn new (x: i32, score: i32) -> Self {
+        let mut random = RandomNumberGenerator::new();
+        Obstacle {
+            x,
+            gap_y: random.range(10, 40),
+            gap_size: i32::max(2, 20 - score),
+        }
+    }
+    fn render (&self, ctx: &mut BTerm, player_x: i32) {
+        let screen_x = self.x - player_x;
+        let half_size = self.gap_size/2;
+
+        // Draw top of obstacle
+        for y in 0..self.gap_y - half_size {
+            ctx.set(
+                screen_x,
+                y,
+                RED,
+                BLACK,
+                to_cp437('|'),
+            );
+        }
+        // Draw bottom of obstacle
+        for y in self.gap_y + half_size..SCREEN_HEIGHT {
+            ctx.set(
+                screen_x,
+                y,
+                RED,
+                BLACK,
+                to_cp437('|'),
+            );
+        }
+    }
+}
 struct State {
     player: Player,
+    score: i32,
+    obstacle: Obstacle,
     frame_time: f32,
     mode: GameMode,
 }
@@ -55,6 +97,8 @@ impl State {
     fn new() -> Self {
         State {
             player: Player::new(),
+            score: 0,
+            obstacle: Obstacle::new(SCREEN_WIDTH, 0),
             frame_time: 0.0,
             mode: GameMode::Menu,
         }
@@ -100,6 +144,13 @@ impl State {
             self.player.flap();
         }
         self.player.render(ctx);
+        self.obstacle.render(ctx, self.player.x);
+        if self.player.x > self.obstacle.x {
+            self.score += 1;
+            self.obstacle = Obstacle::new(
+                self.player.x + SCREEN_WIDTH, self.score
+            );
+        }
         ctx.print(1, 0, "Press SPACE to Flap");
 
         if self.player.y > SCREEN_HEIGHT {
