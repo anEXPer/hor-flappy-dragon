@@ -155,6 +155,7 @@ impl State {
     fn restart(&mut self) {
         self.player = Player::new();
         self.frame_time = 0.0;
+        self.obstacle = Obstacle::new(self.player.x + SCREEN_WIDTH, self.score);
         self.mode = GameMode::Playing;
     }
 }
