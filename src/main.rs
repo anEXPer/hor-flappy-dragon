@@ -146,7 +146,7 @@ impl State {
             self.score += 1;
             self.obstacle = Obstacle::new(self.player.x + SCREEN_WIDTH, self.score);
         }
-        ctx.print(1, 0, "Press SPACE to Flap");
+        ctx.print(1, 0, format!("Press SPACE to Flap. Score: {}", self.score));
 
         if self.player.y > SCREEN_HEIGHT || self.obstacle.lethal_interaction(&self.player) {
             self.mode = GameMode::End;
