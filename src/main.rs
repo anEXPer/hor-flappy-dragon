@@ -85,6 +85,13 @@ impl Obstacle {
             );
         }
     }
+    fn lethal_interaction (&self, player: &Player) -> bool {
+        if player.x != self.x {return false};
+        let half_gap_size = self.gap_size/2;
+        let player_above_gap = player.y < self.gap_y - half_gap_size;
+        let player_below_gap = player.y > self.gap_y + half_gap_size;
+        player_above_gap || player_below_gap
+    }
 }
 struct State {
     player: Player,
@@ -153,7 +160,7 @@ impl State {
         }
         ctx.print(1, 0, "Press SPACE to Flap");
 
-        if self.player.y > SCREEN_HEIGHT {
+        if self.player.y > SCREEN_HEIGHT || self.obstacle.lethal_interaction(&self.player) {
             self.mode = GameMode::End;
         }
     }
